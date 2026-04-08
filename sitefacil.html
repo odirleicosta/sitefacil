@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiteFácil — Ferramenta Interna</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f5f4f0;
+  --white:#ffffff;
+  --surface:#fffffe;
+  --border:#e2e0d8;
+  --border2:#ccc9be;
+  --text:#1a1a18;
+  --muted:#7a7868;
+  --accent:#1d6b3e;
+  --accent-light:#e8f5ee;
+  --accent2:#e8500a;
+  --radius:14px;
+  --shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:15px;
+}
+
+/* LOGIN */
+#login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:var(--bg);
+}
+.login-box{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:48px 40px;
+  width:100%;
+  max-width:400px;
+  text-align:center;
+  box-shadow:var(--shadow);
+}
+.login-logo{
+  width:56px;height:56px;
+  background:var(--accent);
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;
+  font-family:'Outfit',sans-serif;
+  font-size:22px;font-weight:800;color:#fff;
+}
+.login-box h1{
+  font-family:'Outfit',sans-serif;
+  font-size:24px;font-weight:700;
+  margin-bottom:6px;
+}
+.login-box p{color:var(--muted);font-size:14px;margin-bottom:32px;}
+.login-box input{
+  width:100%;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  padding:13px 16px;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  color:var(--text);
+  background:var(--bg);
+  outline:none;
+  margin-bottom:12px;
+  transition:border-color .2s;
+}
+.login-box input:focus{border-color:var(--accent);}
+.login-box input[type=password]{letter-spacing:3px;}
+.btn-login{
+  width:100%;
+  padding:14px;
+  background:var(--accent);
+  color:#fff;
+  font-family:'Outfit',sans-serif;
+  font-size:16px;font-weight:600;
+  border:none;border-radius:10px;
+  cursor:pointer;
+  margin-top:4px;
+  transition:background .2s;
+}
+.btn-login:hover{background:#155c33;}
+.login-error{
+  color:#c0392b;font-size:13px;
+  margin-top:12px;display:none;
+}
+
+/* APP */
+#app{display:none;}
+
+/* HEADER */
+.header{
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:60px;
+  position:sticky;top:0;z-index:100;
+}
+.header-logo{
+  font-family:'Outfit',sans-serif;
+  font-size:20px;font-weight:800;
+  color:var(--accent);
+  display:flex;align-items:center;gap:10px;
+}
+.header-logo span{
+  width:32px;height:32px;
+  background:var(--accent);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:14px;
+}
+.header-nav{display:flex;gap:4px;}
+.nav-btn{
+  padding:8px 16px;
+  border:none;border-radius:8px;
+  background:transparent;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:500;
+  color:var(--muted);
+  cursor:pointer;transition:all .2s;
+}
+.nav-btn.active,.nav-btn:hover{background:var(--accent-light);color:var(--accent);}
+.btn-sair{
+  font-size:13px;color:var(--muted);
+  background:none;border:none;cursor:pointer;
+  padding:6px 12px;border-radius:6px;
+}
+.btn-sair:hover{color:var(--text);}
+
+/* MAIN */
+.main{max-width:860px;margin:0 auto;padding:28px 20px 80px;}
+
+/* TELAS */
+.tela{display:none;}
+.tela.ativa{display:block;}
+
+/* PAGE TITLE */
+.page-title{
+  font-family:'Outfit',sans-serif;
+  font-size:26px;font-weight:700;
+  margin-bottom:6px;
+}
+.page-sub{color:var(--muted);font-size:15px;margin-bottom:28px;}
+
+/* FORM CARD */
+.form-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px;
+  margin-bottom:16px;
+}
+.form-card-title{
+  font-family:'Outfit',sans-serif;
+  font-size:16px;font-weight:600;
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+  color:var(--text);
+}
+.form-card-title .num{
+  width:26px;height:26px;
+  background:var(--accent);
+  color:#fff;
+  border-radius:7px;
+  font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid2 .full{grid-column:1/-1;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{
+  font-size:12px;font-weight:500;
+  color:var(--muted);
+  text-transform:uppercase;letter-spacing:.7px;
+}
+.field input,.field textarea,.field select{
+  border:1.5px solid var(--border);
+  border-radius:9px;
+  padding:11px 14px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;color:var(--text);
+  background:var(--bg);
+  outline:none;
+  transition:border-color .2s;
+  resize:none;
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  border-color:var(--accent);
+  background:var(--white);
+}
+.field textarea{min-height:80px;}
+.field select option{background:var(--white);}
+
+/* LOGO UPLOAD */
+.logo-upload{
+  border:2px dashed var(--border2);
+  border-radius:10px;
+  padding:24px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .2s;
+  background:var(--bg);
+}
+.logo-upload:hover{border-color:var(--accent);background:var(--accent-light);}
+.logo-upload p{font-size:13px;color:var(--muted);margin-top:8px;}
+.logo-upload strong{font-size:14px;color:var(--text);}
+.logo-preview{
+  max-height:70px;max-width:200px;
+  object-fit:contain;border-radius:6px;
+  display:none;margin:0 auto;
+}
+
+/* SEGMENTO PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.pill input{display:none;}
+.pill label{
+  padding:7px 14px;
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  font-size:13px;font-weight:500;
+  cursor:pointer;color:var(--muted);
+  background:var(--bg);
+  transition:all .2s;display:block;
+}
+.pill input:checked+label{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-light);
+}
+
+/* TAGS */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+.tag-item{
+  background:var(--accent-light);
+  border:1px solid #b8dfc8;
+  color:var(--accent);
+  font-size:13px;font-weight:500;
+  padding:5px 12px;border-radius:20px;
+  display:flex;align-items:center;gap:6px;
+}
+.tag-item button{
+  background:none;border:none;color:var(--accent);
+  font-size:16px;cursor:pointer;padding:0;line-height:1;
+}
+
+/* BTN GERAR */
+.btn-gerar{
+  width:100%;padding:16px;
+  background:var(--accent);color:#fff;
+  font-family:'Outfit',sans-serif;
+  font-size:17px;font-weight:700;
+  border:none;border-radius:12px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all .2s;
+  box-shadow:0 4px 20px rgba(29,107,62,0.25);
+  margin-top:8px;
+}
+.btn-gerar:hover:not(:disabled){background:#155c33;transform:translateY(-1px);}
+.btn-gerar:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+
+/* LOADING */
+.loading-box{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:48px 20px;
+  text-align:center;display:none;
+}
+.loading-box.vis{display:block;}
+.spinner{
+  width:44px;height:44px;
+  border:3px solid var(--border);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  margin:0 auto 20px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-box strong{
+  font-family:'Outfit',sans-serif;
+  font-size:19px;font-weight:700;display:block;margin-bottom:6px;
+}
+.loading-box p{color:var(--muted);font-size:14px;}
+.loading-steps{
+  margin-top:20px;display:flex;
+  flex-direction:column;gap:8px;
+  max-width:280px;margin-left:auto;margin-right:auto;
+}
+.loading-step{
+  font-size:13px;color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+}
+.loading-step.done{color:var(--accent);}
+.step-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--border2);flex-shrink:0;
+}
+.loading-step.done .step-dot{background:var(--accent);}
+.loading-step.current .step-dot{background:var(--accent2);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* RESULTADO */
+#resultado-section{display:none;}
+#resultado-section.vis{display:block;}
+.resultado-header{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;margin-bottom:16px;
+}
+.resultado-header h2{
+  font-family:'Outfit',sans-serif;
+  font-size:20px;font-weight:700;
+  color:var(--accent);
+  display:flex;align-items:center;gap:8px;
+}
+.btn-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-sm{
+  padding:9px 16px;border-radius:9px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:500;
+  cursor:pointer;border:none;transition:all .2s;
+}
+.btn-outline{
+  background:var(--white);border:1.5px solid var(--border2);
+  color:var(--text);
+}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-green{background:var(--accent);color:#fff;}
+.btn-green:hover{background:#155c33;}
+.btn-orange{background:var(--accent2);color:#fff;}
+.btn-orange:hover{background:#c4420a;}
+
+/* TABS */
+.tabs-bar{
+  display:flex;gap:4px;
+  background:var(--white);border:1px solid var(--border);
+  border-radius:10px;padding:4px;width:fit-content;margin-bottom:14px;
+}
+.tab-btn{
+  padding:7px 18px;border-radius:7px;
+  font-size:14px;font-weight:500;cursor:pointer;
+  border:none;background:transparent;color:var(--muted);transition:all .2s;
+}
+.tab-btn.ativo{background:var(--accent);color:#fff;}
+
+/* IFRAME */
+.preview-wrap{
+  border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  background:#fff;
+}
+.preview-bar{
+  background:var(--bg);border-bottom:1px solid var(--border);
+  padding:10px 14px;display:flex;align-items:center;gap:8px;
+}
+.preview-bar-dot{width:11px;height:11px;border-radius:50%;}
+.preview-url-bar{
+  flex:1;background:var(--white);border:1px solid var(--border);
+  border-radius:6px;padding:4px 12px;
+  font-size:12px;color:var(--muted);margin:0 10px;
+}
+#preview-iframe{width:100%;height:580px;border:none;display:block;}
+
+/* CODE */
+.code-wrap{
+  border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  display:none;
+}
+.code-wrap.vis{display:block;}
+.code-bar{
+  background:var(--bg);border-bottom:1px solid var(--border);
+  padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;color:var(--muted);
+}
+#code-output{
+  width:100%;height:460px;padding:18px;
+  background:#1a1a18;color:#a8ff8a;
+  font-family:'Courier New',monospace;font-size:12px;line-height:1.7;
+  border:none;resize:none;outline:none;
+}
+
+/* HISTÓRICO */
+.historico-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:12px;margin-top:4px;
+}
+.hist-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;
+  cursor:pointer;transition:all .2s;
+}
+.hist-card:hover{border-color:var(--accent);box-shadow:var(--shadow);}
+.hist-card-nome{
+  font-family:'Outfit',sans-serif;
+  font-size:16px;font-weight:600;margin-bottom:4px;
+}
+.hist-card-seg{font-size:13px;color:var(--muted);margin-bottom:12px;}
+.hist-card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.hist-card-data{font-size:12px;color:var(--muted);}
+.hist-card-btn{
+  font-size:12px;padding:5px 12px;
+  background:var(--accent-light);color:var(--accent);
+  border:none;border-radius:6px;cursor:pointer;font-weight:500;
+}
+.hist-vazio{
+  text-align:center;padding:48px 20px;
+  color:var(--muted);font-size:15px;
+}
+
+/* PALETA */
+.paleta-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.paleta-opt{display:none;}
+.paleta-opt+label{
+  display:flex;align-items:center;gap:8px;
+  cursor:pointer;padding:7px 14px;
+  border-radius:20px;border:1.5px solid var(--border);
+  background:var(--bg);font-size:13px;
+  color:var(--muted);transition:all .2s;margin:0;
+}
+.paleta-opt:checked+label{
+  border-color:var(--accent);color:var(--text);
+  background:var(--accent-light);
+}
+.pdot{width:13px;height:13px;border-radius:50%;flex-shrink:0;}
+
+/* EMPTY STATE */
+.empty-icon{
+  width:56px;height:56px;
+  background:var(--accent-light);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;font-size:24px;
+}
+
+@media(max-width:600px){
+  .grid2{grid-template-columns:1fr;}
+  .grid2 .full{grid-column:1;}
+  .form-card{padding:20px 16px;}
+  .header-logo .logo-text{display:none;}
+  .main{padding:20px 14px 80px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">SF</div>
+    <h1>SiteFácil</h1>
+    <p>Ferramenta interna — acesso restrito</p>
+    <input type="text" id="login-user" placeholder="Usuário" autocomplete="username" />
+    <input type="password" id="login-pass" placeholder="Senha" autocomplete="current-password" />
+    <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="login-error">Usuário ou senha incorretos</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="header">
+    <div class="header-logo">
+      <span>SF</span>
+      <span class="logo-text">SiteFácil</span>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-btn active" onclick="irPara('criar')">Criar Site</button>
+      <button class="nav-btn" onclick="irPara('historico')">Histórico</button>
+    </nav>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </header>
+
+  <main class="main">
+
+    <!-- TELA: CRIAR SITE -->
+    <div class="tela ativa" id="tela-criar">
+      <div class="page-title">Novo site para cliente</div>
+      <div class="page-sub">Preencha os dados do cliente e gere o site em segundos.</div>
+
+      <div id="form-section">
+
+        <!-- Bloco 1: Dados -->
+        <div class="form-card">
+          <div class="form-card-title"><span class="num">1</span> Dados do cliente</div>
+          <div class="grid2">
+            <div class="field">
+              <label>Nome da empresa *</label>
+              <input type="text" id="nome" placeholder="Ex: Padaria do João" />
+            </div>
+            <div class="field">
+              <label>Cidade</label>
+              <input type="text" id="cidade" placeholder="Ex: Joinville, SC" />
+            </div>
+            <div class="field full">
+              <label>O que a empresa faz? *</label>
+              <textarea id="descricao" placeholder="Descreva o negócio: produtos, serviços, diferenciais, tempo de mercado..."></textarea>
+            </div>
+            <div class="field">
+              <label>WhatsApp</label>
+              <input type="text" id="whatsapp" placeholder="(47) 99999-9999" />
+            </div>
+            <div class="field">
+              <label>E-mail</label>
+              <input type="text" id="email" placeholder="contato@empresa.com.br" />
+            </div>
+            <div class="field">
+              <label>Slogan (opcional)</label>
+              <input type="text" id="slogan" placeholder="Ex: Qualidade que você sente" />
+            </div>
+            <div class="field">
+              <label>Endereço (opcional)</label>
+              <input type="text" id="endereco" placeholder="Rua, número, bairro" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 2: Segmento -->
+        <div class="form-card">
+          <div class="form-card-title"><span class="num">2</span> Segmento do negócio</div>
+          <div class="field">
+            <label>Escolha o segmento</label>
+            <div class="pills">
+              <div class="pill"><input type="radio" name="seg" id="s1" value="Alimentação e Restaurante" /><label for="s1">Alimentação</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s2" value="Saúde e Clínica" /><label for="s2">Saúde / Clínica</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s3" value="Comércio e Loja" /><label for="s3">Comércio / Loja</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s4" value="Indústria e Manufatura" /><label for="s4">Indústria</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s5" value="Serviços Gerais" /><label for="s5">Serviços</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s6" value="Beleza e Estética" /><label for="s6">Beleza</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s7" value="Educação e Cursos" /><label for="s7">Educação</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s8" value="Tecnologia" /><label for="s8">Tecnologia</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s9" value="Construção e Reforma" /><label for="s9">Construção</label></div>
+              <div class="pill"><input type="radio" name="seg" id="s10" value="Outro" checked /><label for="s10">Outro</label></div>
+            </div>
+          </div>
+          <div class="field" style="margin-top:14px;">
+            <label>Produtos / serviços oferecidos (Enter para adicionar)</label>
+            <input type="text" id="servico-input" placeholder="Ex: Corte de cabelo — pressione Enter" />
+            <div class="tags-wrap" id="tags-wrap"></div>
+          </div>
+        </div>
+
+        <!-- Bloco 3: Logo -->
+        <div class="form-card">
+          <div class="form-card-title"><span class="num">3</span> Logo do cliente (opcional)</div>
+          <div class="logo-upload" id="logo-drop" onclick="document.getElementById('logo-file').click()">
+            <img class="logo-preview" id="logo-preview" src="" alt="logo" />
+            <div id="logo-placeholder">
+              <strong>Clique para enviar a logo</strong>
+              <p>PNG, JPG ou SVG — aparecerá no site gerado</p>
+            </div>
+          </div>
+          <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="carregarLogo(event)" />
+        </div>
+
+        <!-- Bloco 4: Estilo -->
+        <div class="form-card">
+          <div class="form-card-title"><span class="num">4</span> Estilo visual</div>
+          <div class="grid2">
+            <div class="field full">
+              <label>Paleta de cores</label>
+              <div class="paleta-grid">
+                <input class="paleta-opt" type="radio" name="paleta" id="p1" value="azul corporativo com cinza escuro e branco" checked />
+                <label for="p1"><span class="pdot" style="background:#1a4fa8"></span> Azul Corporativo</label>
+                <input class="paleta-opt" type="radio" name="paleta" id="p2" value="vermelho vibrante com cinza e branco" />
+                <label for="p2"><span class="pdot" style="background:#c0392b"></span> Vermelho</label>
+                <input class="paleta-opt" type="radio" name="paleta" id="p3" value="verde escuro com tons naturais e branco" />
+                <label for="p3"><span class="pdot" style="background:#1a7a4a"></span> Verde</label>
+                <input class="paleta-opt" type="radio" name="paleta" id="p4" value="cinza chumbo sofisticado com azul e branco" />
+                <label for="p4"><span class="pdot" style="background:#2c3e50"></span> Cinza Premium</label>
+                <input class="paleta-opt" type="radio" name="paleta" id="p5" value="laranja vibrante com cinza escuro e branco" />
+                <label for="p5"><span class="pdot" style="background:#e67e22"></span> Laranja</label>
+                <input class="paleta-opt" type="radio" name="paleta" id="p6" value="preto com dourado e branco, estilo luxo" />
+                <label for="p6"><span class="pdot" style="background:#111"></span> Preto Luxo</label>
+                <input class="paleta-opt" type="radio" name="paleta" id="p7" value="rosa moderno com cinza claro e branco" />
+                <label for="p7"><span class="pdot" style="background:#e91e8c"></span> Rosa</label>
+                <input class="paleta-opt" type="radio" name="paleta" id="p8" value="roxo moderno com cinza e branco" />
+                <label for="p8"><span class="pdot" style="background:#7c3aed"></span> Roxo</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Estilo do layout</label>
+              <select id="estilo">
+                <option value="moderno e profissional com cards bem estruturados">Moderno / Profissional</option>
+                <option value="industrial e robusto com elementos bold">Industrial / Robusto</option>
+                <option value="clean e minimalista com muito espaço em branco">Clean / Minimalista</option>
+                <option value="elegante e sofisticado com tipografia refinada">Elegante / Sofisticado</option>
+                <option value="jovem e colorido com elementos modernos">Jovem / Colorido</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Tom de comunicação</label>
+              <select id="tom">
+                <option value="profissional e confiável">Profissional / Confiável</option>
+                <option value="direto e comercial focado em conversão">Direto / Comercial</option>
+                <option value="acessível e próximo ao cliente">Acessível / Amigável</option>
+                <option value="técnico e especializado">Técnico / Especializado</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-gerar" id="btn-gerar" onclick="gerarSite()">
+          ✦ Gerar site do cliente
+        </button>
+      </div>
+
+      <!-- LOADING -->
+      <div class="loading-box" id="loading">
+        <div class="spinner"></div>
+        <strong>Criando o site...</strong>
+        <p>Aguarde, isso leva de 20 a 40 segundos</p>
+        <div class="loading-steps">
+          <div class="loading-step current" id="step1"><div class="step-dot"></div> Analisando dados do cliente</div>
+          <div class="loading-step" id="step2"><div class="step-dot"></div> Criando textos e estrutura</div>
+          <div class="loading-step" id="step3"><div class="step-dot"></div> Aplicando design e cores</div>
+          <div class="loading-step" id="step4"><div class="step-dot"></div> Finalizando o site</div>
+        </div>
+      </div>
+
+      <!-- RESULTADO -->
+      <div id="resultado-section">
+        <div class="resultado-header">
+          <h2>✓ Site pronto!</h2>
+          <div class="btn-actions">
+            <button class="btn-sm btn-outline" onclick="novoSite()">+ Novo site</button>
+            <button class="btn-sm btn-green" onclick="baixarSite()">⬇ Baixar HTML</button>
+          </div>
+        </div>
+
+        <div class="tabs-bar">
+          <button class="tab-btn ativo" onclick="showTab('preview',this)">Pré-visualização</button>
+          <button class="tab-btn" onclick="showTab('code',this)">Código HTML</button>
+        </div>
+
+        <div id="tab-preview">
+          <div class="preview-wrap">
+            <div class="preview-bar">
+              <div class="preview-bar-dot" style="background:#ff5f57"></div>
+              <div class="preview-bar-dot" style="background:#febc2e"></div>
+              <div class="preview-bar-dot" style="background:#28c840"></div>
+              <div class="preview-url-bar" id="preview-url">site-do-cliente.html</div>
+            </div>
+            <iframe id="preview-iframe" sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+
+        <div class="code-wrap" id="tab-code">
+          <div class="code-bar">
+            <span>index.html — pronto para entregar</span>
+            <button class="btn-sm btn-outline" onclick="copiarCodigo()" style="padding:5px 12px;font-size:12px;">Copiar</button>
+          </div>
+          <textarea id="code-output" readonly></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA: HISTÓRICO -->
+    <div class="tela" id="tela-historico">
+      <div class="page-title">Histórico de sites</div>
+      <div class="page-sub">Todos os sites gerados pela sua equipe.</div>
+      <div id="historico-content"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── AUTH ──────────────────────────────────────
+const USUARIO = 'sitefacil';
+const SENHA = 'leite2025';
+
+function fazerLogin(){
+  const u = document.getElementById('login-user').value.trim();
+  const s = document.getElementById('login-pass').value.trim();
+  if(u===USUARIO && s===SENHA){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    renderHistorico();
+  } else {
+    document.getElementById('login-error').style.display='block';
+  }
+}
+document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
+
+function sair(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+}
+
+// ── NAVEGAÇÃO ──────────────────────────────────
+function irPara(tela){
+  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tela-'+tela).classList.add('ativa');
+  event.target.classList.add('active');
+  if(tela==='historico') renderHistorico();
+}
+
+// ── LOGO ──────────────────────────────────────
+let logoBase64 = '';
+function carregarLogo(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = r => {
+    logoBase64 = r.target.result;
+    document.getElementById('logo-preview').src = logoBase64;
+    document.getElementById('logo-preview').style.display='block';
+    document.getElementById('logo-placeholder').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── TAGS ──────────────────────────────────────
+let tags = [];
+document.getElementById('servico-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    const v = this.value.trim();
+    if(v && !tags.includes(v)){tags.push(v);renderTags();}
+    this.value='';
+  }
+});
+function renderTags(){
+  document.getElementById('tags-wrap').innerHTML = tags.map((t,i)=>`
+    <div class="tag-item">${t}<button onclick="removeTag(${i})">×</button></div>
+  `).join('');
+}
+function removeTag(i){tags.splice(i,1);renderTags();}
+
+// ── TABS RESULTADO ────────────────────────────
+function showTab(tab, btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  document.getElementById('tab-preview').style.display = tab==='preview'?'block':'none';
+  const code = document.getElementById('tab-code');
+  tab==='code' ? code.classList.add('vis') : code.classList.remove('vis');
+}
+
+// ── GERAR SITE ────────────────────────────────
+let htmlGerado = '';
+let loadingTimer;
+
+function animarLoading(){
+  const steps = ['step1','step2','step3','step4'];
+  let i = 0;
+  steps.forEach(s=>{
+    document.getElementById(s).className='loading-step';
+  });
+  document.getElementById(steps[0]).className='loading-step current';
+  loadingTimer = setInterval(()=>{
+    if(i < steps.length-1){
+      document.getElementById(steps[i]).className='loading-step done';
+      i++;
+      document.getElementById(steps[i]).className='loading-step current';
+    }
+  }, 9000);
+}
+
+async function gerarSite(){
+  const nome = document.getElementById('nome').value.trim();
+  const descricao = document.getElementById('descricao').value.trim();
+  if(!nome || !descricao){
+    alert('Preencha pelo menos o nome da empresa e a descrição.');
+    return;
+  }
+
+  const cidade = document.getElementById('cidade').value.trim();
+  const whatsapp = document.getElementById('whatsapp').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const slogan = document.getElementById('slogan').value.trim();
+  const endereco = document.getElementById('endereco').value.trim();
+  const segRaw = document.querySelector('input[name="seg"]:checked');
+  const segmento = segRaw ? segRaw.value : 'Negócio local';
+  const paleta = document.querySelector('input[name="paleta"]:checked').value;
+  const estilo = document.getElementById('estilo').value;
+  const tom = document.getElementById('tom').value;
+
+  document.getElementById('form-section').style.display='none';
+  document.getElementById('resultado-section').style.display='none';
+  document.getElementById('resultado-section').classList.remove('vis');
+  document.getElementById('loading').classList.add('vis');
+  document.getElementById('btn-gerar').disabled=true;
+  animarLoading();
+
+  const logoInfo = logoBase64
+    ? `A empresa tem logo. Use este base64 como src da tag img no header: ${logoBase64.substring(0,100)}... (use o base64 completo que foi fornecido)`
+    : 'A empresa não forneceu logo. Crie um logotipo textual elegante com as iniciais no header.';
+
+  const prompt = `Você é um desenvolvedor web expert especialista em criar sites profissionais para pequenas e médias empresas brasileiras. Crie um site HTML completo, moderno e profissional para:
+
+DADOS DA EMPRESA:
+- Nome: ${nome}
+- Segmento: ${segmento}
+- Slogan: ${slogan || '(crie um slogan adequado ao negócio)'}
+- Descrição: ${descricao}
+- Cidade: ${cidade || 'Brasil'}
+- WhatsApp: ${whatsapp || '(deixe campo para preencher)'}
+- E-mail: ${email || ''}
+- Endereço: ${endereco || ''}
+- Produtos/Serviços: ${tags.length>0 ? tags.join(', ') : 'liste baseado na descrição'}
+
+LOGO: ${logoInfo}
+
+ESTILO VISUAL:
+- Paleta de cores: ${paleta}
+- Layout: ${estilo}
+- Tom de comunicação: ${tom}
+
+ESTRUTURA OBRIGATÓRIA:
+1. Header com logo/nome + menu de navegação responsivo (hambúrguer no mobile)
+2. Hero section com headline impactante, subtítulo e botão WhatsApp/CTA
+3. Seção "Sobre nós" com história e missão da empresa
+4. Seção de Produtos/Serviços com cards visuais bem elaborados
+5. Seção "Por que nos escolher" com diferenciais e benefícios
+6. Seção de depoimentos (crie 3 depoimentos fictícios mas realistas)
+7. Seção de contato com WhatsApp, e-mail e endereço
+8. Rodapé profissional com links e informações
+
+REQUISITOS TÉCNICOS OBRIGATÓRIOS:
+- HTML5 completo, CSS inline no style, JavaScript para menu mobile
+- Totalmente responsivo, mobile-first
+- Google Fonts adequadas ao estilo (escolha fontes marcantes, não Arial/Roboto)
+- Animações CSS suaves no carregamento (fade-in, slide)
+- Botão flutuante WhatsApp no canto inferior direito (verde, sempre visível)
+- Scroll suave entre seções
+- Cores e tipografia coerentes e profissionais
+- NUNCA use Lorem Ipsum — todos os textos devem ser reais e adequados à empresa
+- O site deve parecer feito por um designer profissional experiente
+- Use ícones SVG inline onde necessário
+
+IMPORTANTE: Retorne APENAS o código HTML completo. Sem explicações, sem markdown, sem \`\`\`html. Comece com <!DOCTYPE html> e termine com </html>.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:8000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await resp.json();
+    let html = data.content?.map(b=>b.text||'').join('') || '';
+    html = html.replace(/^```html\n?/i,'').replace(/^```\n?/,'').replace(/\n?```$/,'').trim();
+
+    // Inject logo if uploaded
+    if(logoBase64 && html.includes('base64 completo que foi fornecido')){
+      html = html.replace(/src="data:image[^"]*\.\.\.[^"]*"/g, `src="${logoBase64}"`);
+    }
+
+    htmlGerado = html;
+    clearInterval(loadingTimer);
+
+    // Salvar no histórico
+    salvarHistorico({
+      nome, segmento, cidade,
+      data: new Date().toLocaleDateString('pt-BR'),
+      html
+    });
+
+    const iframe = document.getElementById('preview-iframe');
+    const blob = new Blob([html],{type:'text/html'});
+    iframe.src = URL.createObjectURL(blob);
+    document.getElementById('code-output').value = html;
+    document.getElementById('preview-url').textContent = nome.toLowerCase().replace(/\s+/g,'-')+'.html';
+
+    document.getElementById('loading').classList.remove('vis');
+    document.getElementById('resultado-section').style.display='block';
+    document.getElementById('resultado-section').classList.add('vis');
+
+  } catch(err){
+    clearInterval(loadingTimer);
+    document.getElementById('loading').classList.remove('vis');
+    document.getElementById('form-section').style.display='block';
+    document.getElementById('btn-gerar').disabled=false;
+    alert('Erro ao gerar o site. Tente novamente.');
+    console.error(err);
+  }
+}
+
+function novoSite(){
+  htmlGerado='';logoBase64='';tags=[];
+  document.getElementById('form-section').style.display='block';
+  document.getElementById('resultado-section').style.display='none';
+  document.getElementById('resultado-section').classList.remove('vis');
+  document.getElementById('btn-gerar').disabled=false;
+  document.getElementById('logo-preview').style.display='none';
+  document.getElementById('logo-placeholder').style.display='block';
+  renderTags();
+  document.getElementById('tab-preview').style.display='block';
+  document.getElementById('tab-code').classList.remove('vis');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.toggle('ativo',i===0);
+  });
+}
+
+function baixarSite(){
+  const nome = document.getElementById('nome').value.trim()||'site-cliente';
+  const blob = new Blob([htmlGerado],{type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nome.toLowerCase().replace(/\s+/g,'-')+'.html';
+  a.click();
+}
+
+function copiarCodigo(){
+  navigator.clipboard.writeText(htmlGerado).then(()=>alert('Código copiado!'));
+}
+
+// ── HISTÓRICO ────────────────────────────────
+function salvarHistorico(item){
+  const hist = JSON.parse(localStorage.getItem('sf_historico')||'[]');
+  hist.unshift(item);
+  if(hist.length>50) hist.pop();
+  localStorage.setItem('sf_historico', JSON.stringify(hist));
+}
+
+function renderHistorico(){
+  const hist = JSON.parse(localStorage.getItem('sf_historico')||'[]');
+  const el = document.getElementById('historico-content');
+  if(hist.length===0){
+    el.innerHTML=`<div class="hist-vazio">
+      <div class="empty-icon">📋</div>
+      <p>Nenhum site gerado ainda.<br>Crie o primeiro site de um cliente!</p>
+    </div>`;
+    return;
+  }
+  el.innerHTML=`<div class="historico-grid">${hist.map((h,i)=>`
+    <div class="hist-card" onclick="verSiteHist(${i})">
+      <div class="hist-card-nome">${h.nome}</div>
+      <div class="hist-card-seg">${h.segmento} ${h.cidade?'· '+h.cidade:''}</div>
+      <div class="hist-card-footer">
+        <span class="hist-card-data">${h.data}</span>
+        <button class="hist-card-btn">Ver site</button>
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function verSiteHist(i){
+  const hist = JSON.parse(localStorage.getItem('sf_historico')||'[]');
+  const item = hist[i];
+  htmlGerado = item.html;
+  irPara('criar');
+  document.querySelectorAll('.nav-btn')[0].classList.add('active');
+  document.querySelectorAll('.nav-btn')[1].classList.remove('active');
+  document.getElementById('form-section').style.display='none';
+  const iframe = document.getElementById('preview-iframe');
+  const blob = new Blob([item.html],{type:'text/html'});
+  iframe.src = URL.createObjectURL(blob);
+  document.getElementById('code-output').value = item.html;
+  document.getElementById('preview-url').textContent = item.nome.toLowerCase().replace(/\s+/g,'-')+'.html';
+  document.getElementById('resultado-section').style.display='block';
+  document.getElementById('resultado-section').classList.add('vis');
+}
+</script>
+</body>
+</html>
