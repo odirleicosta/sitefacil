@@ -756,20 +756,15 @@ async function gerarSite(){
   document.getElementById('loading').classList.add('vis');
   animarLoading();
 
-  const prompt=montarPrompt();
-
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const prompt=montarPrompt();
+    const resp=await fetch('/api/gerar',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:8000,
-        messages:[{role:'user',content:prompt}]
-      })
+      body:JSON.stringify({prompt})
     });
     const data=await resp.json();
-    let html=data.content?.map(b=>b.text||'').join('')||'';
+    let html=data.text||'';
     html=html.replace(/^```html\n?/i,'').replace(/^```\n?/,'').replace(/\n?```$/,'').trim();
 
     htmlGerado=html;
